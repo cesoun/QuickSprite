@@ -4,11 +4,13 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         mc:Ignorable="d"
-        Title="Quick Sprite" Height="425" Width="650" ResizeMode="NoResize" FontFamily="Roboto Mono" AllowDrop="True" Drop="LoadImage_OnDrop" Background="#FF466FB8">
+        Title="Quick Sprite" Height="455" Width="650" ResizeMode="NoResize" FontFamily="Roboto Mono" AllowDrop="True" Drop="LoadImage_OnDrop" Background="#FF466FB8">
 
     <Grid>
         <!-- Side Bar -->
-        <Button x:Name="SaveButton" Content="Save Sprites" HorizontalAlignment="Left" Margin="0,366,0,0" VerticalAlignment="Top" Width="125" Height="30" BorderThickness="0" Background="#FF3F62A0" Foreground="White" BorderBrush="Black"/>
+        <Button x:Name="SaveButton" Content="Save Sprites" HorizontalAlignment="Left" Margin="0,396,0,0" VerticalAlignment="Top" Width="125" Height="30" BorderThickness="0" Background="#FF3F62A0" Foreground="White" BorderBrush="Black"/>
+        <Button x:Name="CopyButton" Content="Copy Sprites" HorizontalAlignment="Left" Margin="0,366,0,0" VerticalAlignment="Top" Width="125" Height="30" BorderThickness="0" Background="#FF3F62A0" Foreground="White" BorderBrush="Black"/>
+
         <TreeView x:Name="TreeSprites" HorizontalAlignment="Left" Height="241" Margin="0,125,0,0" VerticalAlignment="Top" Width="125" Background="{x:Null}" BorderBrush="{x:Null}" Foreground="White">
             <TreeView.Resources>
                 <Style TargetType="{x:Type TreeViewItem}">
@@ -42,14 +44,11 @@
         <DockPanel Grid.Row="0" Grid.Column="0" HorizontalAlignment="Left" Height="125" Margin="0" VerticalAlignment="Top" Width="125">
             <Image x:Name="ImagePreview"/>
         </DockPanel>
-        <Label Content="Drag &amp; Drop" HorizontalAlignment="Left" VerticalAlignment="Top" HorizontalContentAlignment="Center" Margin="130,366,0,0" Width="514" Foreground="White">
+        <Label Content="Drag &amp; Drop" HorizontalAlignment="Left" VerticalAlignment="Top" HorizontalContentAlignment="Center" Margin="130,378,0,0" Width="514" Foreground="White">
             <Label.Effect>
                 <DropShadowEffect ShadowDepth="3" Direction="270" Opacity="0.5"/>
             </Label.Effect>
         </Label>
-
-
-
     </Grid>
 
 </Window>

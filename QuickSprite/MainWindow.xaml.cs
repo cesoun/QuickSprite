@@ -2,6 +2,7 @@
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -43,6 +44,7 @@ namespace QuickSprite
             ImageSelector.MouseMove += Selector_MouseMove;
 
             SaveButton.Click += SaveSprites;
+            CopyButton.Click += ToClipboard;
 
             ImagePreview.MouseDown += ResetSprites;
             ImageBackground.MouseDown += ResetSprites;
@@ -157,8 +159,10 @@ namespace QuickSprite
             scaleTrans.ScaleY += zoom;
         }
 
-        private static void SaveSprites(object sender, RoutedEventArgs e)
+        private async void SaveSprites(object sender, RoutedEventArgs e)
         {
+            SaveButton.Content = "Saving...";
+
             var saveDialog = new SaveFileDialog
             {
                 Filter = "txt files (*.txt)|*.txt",
@@ -169,6 +173,20 @@ namespace QuickSprite
 
             if (saveDialog.ShowDialog() == true)
                 File.WriteAllText(saveDialog.FileName, _output.ToString());
+
+            SaveButton.Content = "Saved...";
+
+            await Task.Delay(1500);
+            SaveButton.Content = "Save Sprites";
+        }
+
+        private async void ToClipboard(object sender, RoutedEventArgs e)
+        {
+            Clipboard.SetText(_output.ToString());
+            CopyButton.Content = "Copied...";
+
+            await Task.Delay(1500);
+            CopyButton.Content = "Copy Sprites";
         }
     }
 }
