@@ -8,8 +8,8 @@
 
     <Grid>
         <!-- Side Bar -->
-        <Button x:Name="SaveButton" Content="Save Sprites" HorizontalAlignment="Left" Margin="0,356,0,0" VerticalAlignment="Top" Width="125" Height="30" BorderThickness="0" Background="#FF3F62A0" Foreground="White" BorderBrush="Black"/>
-        <TreeView x:Name="TreeSprites" HorizontalAlignment="Left" Height="231" Margin="0,125,0,0" VerticalAlignment="Top" Width="125" Background="{x:Null}" BorderBrush="{x:Null}" Foreground="White">
+        <Button x:Name="SaveButton" Content="Save Sprites" HorizontalAlignment="Left" Margin="0,366,0,0" VerticalAlignment="Top" Width="125" Height="30" BorderThickness="0" Background="#FF3F62A0" Foreground="White" BorderBrush="Black"/>
+        <TreeView x:Name="TreeSprites" HorizontalAlignment="Left" Height="241" Margin="0,125,0,0" VerticalAlignment="Top" Width="125" Background="{x:Null}" BorderBrush="{x:Null}" Foreground="White">
             <TreeView.Resources>
                 <Style TargetType="{x:Type TreeViewItem}">
                     <Setter Property="HeaderTemplate">
@@ -42,7 +42,7 @@
         <DockPanel Grid.Row="0" Grid.Column="0" HorizontalAlignment="Left" Height="125" Margin="0" VerticalAlignment="Top" Width="125">
             <Image x:Name="ImagePreview"/>
         </DockPanel>
-        <Label Content="Drag &amp; Drop" HorizontalAlignment="Left" VerticalAlignment="Top" HorizontalContentAlignment="Center" Margin="130,360,0,0" Width="514" Foreground="White">
+        <Label Content="Drag &amp; Drop" HorizontalAlignment="Left" VerticalAlignment="Top" HorizontalContentAlignment="Center" Margin="130,366,0,0" Width="514" Foreground="White">
             <Label.Effect>
                 <DropShadowEffect ShadowDepth="3" Direction="270" Opacity="0.5"/>
             </Label.Effect>
