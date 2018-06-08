@@ -11,7 +11,9 @@ Top left box is the loaded `image preview`. Clicking it will reset the forms.
 
 Below this is the `scroll view` which shows all sprites gathered from the sprite cutter. Left clicking these will remove them.
 
-Below this is the `save file` button. Click this will ask for a save location and let you save the file, yay.
+Below this is the `save sprites` button. Click this will ask for a save location and let you save the file, yay.
+
+Below this is the `copy sprites` button. This will copy the sprites to your clipboard and allow you to paste instead of save.
 
 The main window to the right lets you `pan & zoom` the sprites that get cut from the main image. Right click pans, scrolling in and out zooms.
 
@@ -21,6 +23,6 @@ Drag & Drop any `.png` file with a bit depth of `8 bits`. This is due to the fac
 
 Click any of the images within the `scroll view` to remove in the case you don't need any.
 
-Finally, click the `save file` button and export it to wherever you want. Open that file and copy the text into a `.gani` file.
+Finally, click the `save file` button and export it to wherever you want. Open that file and copy the text into a `.gani` file. Alternatively you can click `copy sprites` and paste them directly from your clipboard.
 
 [![Video Link](https://img.youtube.com/vi/dyXG-uzXw4Y/0.jpg)](https://www.youtube.com/watch?v=dyXG-uzXw4Y)

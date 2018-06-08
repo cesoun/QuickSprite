@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -10,6 +11,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using Microsoft.Win32;
 using QuickSprite.Utility;
+using Point = System.Windows.Point;
 
 namespace QuickSprite
 {
@@ -17,12 +19,16 @@ namespace QuickSprite
     {
         private static readonly LoadImage LoadImage = new LoadImage();
         private static readonly SpriteCutter SpriteCutter = new SpriteCutter();
+       
 
         private static string _fileName;
         private static Point _startPoint;
         private static Point _originPoint;
+        private static BitmapImage _bmpImage;
         private static StringBuilder _output = new StringBuilder();
         private static Dictionary<BitmapImage, string> _spriteDictionary = new Dictionary<BitmapImage, string>();
+
+        private Rectangle[] _rectangles;
 
 
         public MainWindow()
@@ -61,10 +67,10 @@ namespace QuickSprite
 
         private void PopulateTree(string file)
         {
-            var rectangles = SpriteCutter.Blobs;
-            var bmpImage = LoadImage.FromFile(file);
+            _rectangles = SpriteCutter.Blobs;
+            _bmpImage = LoadImage.FromFile(file);
 
-            _spriteDictionary = SpriteCutter.PopulateSprites(bmpImage, rectangles);
+            _spriteDictionary = SpriteCutter.PopulateSprites(_bmpImage, _rectangles);
 
             foreach (var sprite in _spriteDictionary)
             {
@@ -81,22 +87,32 @@ namespace QuickSprite
         private static void PopulateOutput()
         {
             var i = 400;
-
             foreach (var sprite in _spriteDictionary)
             {
                 _output.Append($"SPRITE  {i} {_fileName}{sprite.Value} QUICKSPRITE\n");
                 i++;
             }
-
         }
 
         private void RemoveItem(object sender, RoutedEventArgs e)
         {
             var item = (TreeViewItem) sender;
+            var rects = _rectangles.ToList();
+
+            foreach (var sprite in _spriteDictionary)
+            {
+                if (!Equals(sprite.Key, item.Header)) continue;
+
+                rects.RemoveAt(_spriteDictionary.Keys.ToList().IndexOf((BitmapImage) item.Header));
+            }
+
+            _rectangles = rects.ToArray();
+            ImageSelector.Source = SpriteCutter.UpdateRects(_bmpImage ,_rectangles);
+            _spriteDictionary.Remove((BitmapImage) item.Header);
 
             _output.Clear();
-            _spriteDictionary.Remove((BitmapImage) item.Header);
             PopulateOutput();
+
             TreeSprites.Items.Remove(item);
         }
 
@@ -153,8 +169,7 @@ namespace QuickSprite
             var zoom = e.Delta > 0 ? .2 : -.2;
 
             if (!(scaleTrans.ScaleX + zoom > 0.2) || !(scaleTrans.ScaleY + zoom > 0.2)) return;
-
-
+            
             scaleTrans.ScaleX += zoom;
             scaleTrans.ScaleY += zoom;
         }
@@ -172,9 +187,12 @@ namespace QuickSprite
             };
 
             if (saveDialog.ShowDialog() == true)
+            {
                 File.WriteAllText(saveDialog.FileName, _output.ToString());
-
-            SaveButton.Content = "Saved...";
+                SaveButton.Content = "Saved...";
+            }
+            else
+                SaveButton.Content = "Aborted...";
 
             await Task.Delay(1500);
             SaveButton.Content = "Save Sprites";

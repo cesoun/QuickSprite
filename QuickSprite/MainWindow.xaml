@@ -24,7 +24,7 @@
                                 </Border>
                             </DataTemplate>
                         </Setter.Value>
-                        
+
                     </Setter>
                 </Style>
             </TreeView.Resources>

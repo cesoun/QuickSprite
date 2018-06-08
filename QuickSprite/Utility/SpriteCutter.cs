@@ -1,11 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
 using System.Linq;
 using System.Windows.Media.Imaging;
 using AForge.Imaging;
+using AForge.Imaging.Filters;
 
 namespace QuickSprite.Utility
 {
@@ -17,8 +17,8 @@ namespace QuickSprite.Utility
 
         public BitmapImage GetSprites(BitmapImage image)
         {
-            var bitmapped = new Bitmap(ToBitmap(image));
-            bitmapped = ApplyGrayscale(bitmapped);
+            var bitmap = new Bitmap(ToBitmap(image));
+            var nBitmap = new Bitmap(bitmap.Width, bitmap.Height);
 
             var bc = new BlobCounter
             {
@@ -27,27 +27,42 @@ namespace QuickSprite.Utility
                 FilterBlobs = false
             };
 
-            bc.ProcessImage(bitmapped);
+            bitmap = Grayscale.CommonAlgorithms.BT709.Apply(bitmap);
+            bc.ProcessImage(bitmap);
 
             var blobRects = bc.GetObjectsRectangles();
             Blobs = blobRects;
 
-            var g = Graphics.FromImage(bitmapped);
+            var g = Graphics.FromImage(nBitmap);
             var p = new Pen(Color.WhiteSmoke, 1);
 
-            if (blobRects.Length > 0)
-            {
-                foreach (var rectangle in blobRects)
-                {
-                    g.DrawRectangle(p, rectangle);
-                }
+            g.DrawImage(bitmap, 0, 0);
 
-                return ToBitmapImage(bitmapped);
-            }
-            else
-            {
-                return ToBitmapImage(bitmapped);
-            }
+            if (blobRects.Length < 0) return ToBitmapImage(bitmap);
+
+            foreach (var rectangle in blobRects)
+                g.DrawRectangle(p, rectangle);
+
+            return ToBitmapImage(nBitmap);
+        }
+
+        public static BitmapImage UpdateRects(BitmapImage image, Rectangle[] rectangles)
+        {
+            var bitmap = new Bitmap(ToBitmap(image));
+            var nBitmap = new Bitmap(bitmap.Width, bitmap.Height);
+
+            var g = Graphics.FromImage(nBitmap);
+            var p = new Pen(Color.WhiteSmoke, 1);
+
+            bitmap = Grayscale.CommonAlgorithms.BT709.Apply(bitmap);
+            g.DrawImage(bitmap, 0, 0);
+
+            if (rectangles.Length < 0) return ToBitmapImage(bitmap);
+
+            foreach (var rectangle in rectangles)
+                g.DrawRectangle(p, rectangle);
+
+            return ToBitmapImage(nBitmap);
         }
 
         public static Dictionary<BitmapImage, string> PopulateSprites(BitmapImage image, Rectangle[] rectangles)
@@ -65,23 +80,6 @@ namespace QuickSprite.Utility
 
             return SpriteKvp;
         }
-
-        private static Bitmap ApplyGrayscale(Bitmap image)
-        {
-            for (int x = 0; x < image.Width; x++)
-            {
-                for (int y = 0; y < image.Height; y++)
-                {
-                    var oColor = image.GetPixel(x, y);
-                    var gScale = (int) ((oColor.R * 0.3) + (oColor.G * 0.59) + (oColor.B * 0.11));
-                    var nColor = Color.FromArgb(oColor.A, gScale, gScale, gScale);
-                    image.SetPixel(x, y, nColor);
-                }
-            }
-
-            return image;
-        }
-
 
         /* Thanks to: https://stackoverflow.com/questions/6484357/converting-bitmapimage-to-bitmap-and-vice-versa */
         private static Bitmap ToBitmap(BitmapImage image)
