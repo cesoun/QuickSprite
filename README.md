@@ -25,4 +25,4 @@ Click any of the images within the `scroll view` to remove in the case you don't
 
 Finally, click the `save file` button and export it to wherever you want. Open that file and copy the text into a `.gani` file. Alternatively you can click `copy sprites` and paste them directly from your clipboard.
 
-[![Video Link](https://img.youtube.com/vi/dyXG-uzXw4Y/0.jpg)](https://www.youtube.com/watch?v=dyXG-uzXw4Y)
+[![Video Link](https://img.youtube.com/vi/yD5OuwY5sNc/0.jpg)](https://www.youtube.com/watch?v=yD5OuwY5sNc)
