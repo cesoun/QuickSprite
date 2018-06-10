@@ -4,25 +4,34 @@
 
 `QuickSprite` is a tool designed for Graal. Specifically for those still fond of the offline editor `GraalShop.exe`. This brings the online editor sprite selector to the offline editor in a way. Although not exactly the same it helps cut down on the time that would have been spent selecting sprites. 
 
-
 ### Application Breakdown
 
-Top left box is the loaded `image preview`. Clicking it will reset the forms.
+![QuickSprite](https://i.imgur.com/4mgvRuG.png)
 
-Below this is the `scroll view` which shows all sprites gathered from the sprite cutter. Left clicking these will remove them.
+`Loaded Image`
+Displays the currently loaded file. Clicking this will unload the file and reset the views.
 
-Below this is the `save sprites` button. Click this will ask for a save location and let you save the file, yay.
+`Detected Sprites`
+Displays the individual sprites that have been detected by the SpriteCutter. These correspond the `Pan & Zoom Preview` rectangles. Left Clicking any of these will remove them from the final output and update in the `Pan & Zoom Preview`.
 
-Below this is the `copy sprites` button. This will copy the sprites to your clipboard and allow you to paste instead of save.
+`Precision Slider`
+Adjust how big or small you want the max sprite to be. Increasing this will in some cases remove smaller sprites but merge others that would normally overlap.
 
-The main window to the right lets you `pan & zoom` the sprites that get cut from the main image. Right click pans, scrolling in and out zooms.
+`Copy to Clipboard`
+Copies the output to your clipboard for direct pasting rather than file saving.
 
-### How To Use
+`Save to File`
+Saves the output to a file.
 
-Drag & Drop any `.png` file with a bit depth of `8 bits`. This is due to the fact that the offline editor uses images with bit depth of 8. Also because the blob detection doesn't see anything else. unlucky.
+`Pan & Zoom Preview`
+Displays the detected sprites with highlighted rectangles. Zooming is done via the mouse wheel & Panning is done via holding right click and moving the mouse.
 
-Click any of the images within the `scroll view` to remove in the case you don't need any.
+### Usage
 
-Finally, click the `save file` button and export it to wherever you want. Open that file and copy the text into a `.gani` file. Alternatively you can click `copy sprites` and paste them directly from your clipboard.
+8-Bit images are the best way to go. Keep a transparent background and avoid shades of black & true black (#000000) as much as possible. In some cases adjusting the blacks to a bright color like red or green can help with identifying sprites. Looking to implement an automatic function for this but it might be a while before it happens. 
 
-[![Video Link](https://img.youtube.com/vi/yD5OuwY5sNc/0.jpg)](https://www.youtube.com/watch?v=yD5OuwY5sNc)
+Dragging and dropping anywhere on the application will attempt to load the image. Upon success it will then begin identifying the sprites as best as possible. The main goal being to reduce as much time that would be spent selecting sprites manually. It's not perfect but a step up so work with me a little here, thanks. 
+
+Increasing the precision will adjust the min-max for a sprite size. This can be helpful when sprites have spaces and you want to try and include them. It works primarly when that sprite is identified and eventually intersects another sprites selection. This will merge them into a single sprite for the final output. 
+
+Once happy with all your sprite definitions choosing to `copy` or `save` the file will then let you copy and or paste the text into an exsisting gani. The starting index is currently set to always being at 400. Once pasted simply save and open the gani file to see all your newly added sprites!
