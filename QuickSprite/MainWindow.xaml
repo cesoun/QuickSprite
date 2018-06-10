@@ -4,51 +4,66 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         mc:Ignorable="d"
-        Title="Quick Sprite" Height="455" Width="650" ResizeMode="NoResize" FontFamily="Roboto Mono" AllowDrop="True" Drop="LoadImage_OnDrop" Background="#FF466FB8">
+        Title="Quick Sprite" Height="490" Width="650" ResizeMode="NoResize" FontFamily="Roboto Mono" AllowDrop="True" Drop="LoadImage_OnDrop" Background="#FF466FB8">
 
     <Grid>
-        <!-- Side Bar -->
-        <Button x:Name="SaveButton" Content="Save Sprites" HorizontalAlignment="Left" Margin="0,396,0,0" VerticalAlignment="Top" Width="125" Height="30" BorderThickness="0" Background="#FF3F62A0" Foreground="White" BorderBrush="Black"/>
-        <Button x:Name="CopyButton" Content="Copy Sprites" HorizontalAlignment="Left" Margin="0,366,0,0" VerticalAlignment="Top" Width="125" Height="30" BorderThickness="0" Background="#FF3F62A0" Foreground="White" BorderBrush="Black"/>
+        
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="125"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
 
-        <TreeView x:Name="TreeSprites" HorizontalAlignment="Left" Height="241" Margin="0,125,0,0" VerticalAlignment="Top" Width="125" Background="{x:Null}" BorderBrush="{x:Null}" Foreground="White">
-            <TreeView.Resources>
-                <Style TargetType="{x:Type TreeViewItem}">
-                    <Setter Property="HeaderTemplate">
-                        <Setter.Value>
-                            <DataTemplate>
-                                <Border Padding="5">
-                                    <StackPanel Orientation="Horizontal">
-                                        <Image Source="{Binding}"/>
-                                    </StackPanel>
-                                </Border>
-                            </DataTemplate>
-                        </Setter.Value>
+        <!-- Pan & Zoom Viewer -->
+        <StackPanel Orientation="Vertical" Grid.Column="1" Background="#FF29529C">
+            <Border ClipToBounds="True" x:Name="SelectorBorder" BorderThickness="0">
+                <Image RenderTransformOrigin="0.5, 0.5" x:Name="ImageSelector"/>
+            </Border>
+        </StackPanel>
 
-                    </Setter>
-                </Style>
-            </TreeView.Resources>
-        </TreeView>
-
-        <!-- Sprite Selector -->
-        <Border x:Name="SelectorBorder" ClipToBounds="True" Background="#FF29529C" HorizontalAlignment="Left" Width="519" Margin="125,0,0,0">
-            <Image x:Name="ImageSelector" RenderTransformOrigin="0.5, 0.5"/>
-        </Border>
-
-        <!-- Loaded Image Preview-->
-        <Image x:Name="ImageBackground" Source="/Resources/pattern.png" Width="125" Height="125" HorizontalAlignment="Left" VerticalAlignment="Top">
-            <Image.Effect>
-                <DropShadowEffect Opacity="0.35" ShadowDepth="5" BlurRadius="15" Direction="300"/>
-            </Image.Effect>
-        </Image>
-        <DockPanel Grid.Row="0" Grid.Column="0" HorizontalAlignment="Left" Height="125" Margin="0" VerticalAlignment="Top" Width="125">
-            <Image x:Name="ImagePreview"/>
-        </DockPanel>
-        <Label Content="Drag &amp; Drop" HorizontalAlignment="Left" VerticalAlignment="Top" HorizontalContentAlignment="Center" Margin="130,378,0,0" Width="514" Foreground="White">
+        <!-- Drag & Drop Label -->
+        <Label Height="30" Content="Drag &amp; Drop" Foreground="White" Grid.Column="1" HorizontalContentAlignment="Center" VerticalAlignment="Bottom">
             <Label.Effect>
                 <DropShadowEffect ShadowDepth="3" Direction="270" Opacity="0.5"/>
             </Label.Effect>
         </Label>
+
+        <StackPanel Orientation="Vertical" Grid.Column="0">
+
+            <!-- Image Preview -->
+            <Image Height="125" Width="125" x:Name="ImageBackground" Source="Resources/pattern.png" HorizontalAlignment="Left">
+                <Image.Effect>
+                    <DropShadowEffect Opacity="0.35" ShadowDepth="5" BlurRadius="15" Direction="300"/>
+                </Image.Effect>
+            </Image>
+            <Image Height="125" Width="125" x:Name="ImagePreview" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="0 -125 0 0"/>
+
+            <!-- Sprite Tree -->
+            <TreeView ScrollViewer.HorizontalScrollBarVisibility="Disabled" Height="250" Width="125" x:Name="TreeSprites" BorderThickness="0" Background="{x:Null}" BorderBrush="{x:Null}" Foreground="White" HorizontalAlignment="Left">
+                <TreeView.Resources>
+                    <Style TargetType="{x:Type TreeViewItem}">
+                        <Setter Property="HeaderTemplate">
+                            <Setter.Value>
+                                <DataTemplate>
+                                    <Border Padding="0 3" Margin="-15 0">
+                                        <StackPanel Orientation="Horizontal">
+                                            <Image Source="{Binding}"/>
+                                        </StackPanel>
+                                    </Border>
+                                </DataTemplate>
+                            </Setter.Value>
+                        </Setter>
+                    </Style>
+                </TreeView.Resources>
+            </TreeView>
+
+            <!-- Precision -->
+            <Slider IsEnabled="False" Height="25" Minimum="1" Maximum="20" TickPlacement="TopLeft" IsSnapToTickEnabled="True" AutoToolTipPlacement="TopLeft" x:Name="SliderPrecision" Margin="3 0"/>
+
+            <!-- Buttons -->
+            <Button Height="30" Width="125" x:Name="CopyButton" Content="Copy Sprites" BorderThickness="0" Background="#FF3F62A0" Foreground="White" BorderBrush="Black" HorizontalAlignment="Left"/>
+            <Button Height="30" Width="125" x:Name="SaveButton" Content="Save Sprites" BorderThickness="0" Background="#FF3F62A0" Foreground="White" BorderBrush="Black" HorizontalAlignment="Left"/>
+        </StackPanel>
+
     </Grid>
 
 </Window>

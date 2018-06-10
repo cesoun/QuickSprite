@@ -1,8 +1,10 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
 using System.Linq;
+using System.Windows.Interop;
 using System.Windows.Media.Imaging;
 using AForge.Imaging;
 using AForge.Imaging.Filters;
@@ -15,35 +17,68 @@ namespace QuickSprite.Utility
 
         public Rectangle[] Blobs { get; private set; }
 
-        public BitmapImage GetSprites(BitmapImage image)
+        public BitmapImage GetSprites(BitmapImage image, int precision)
         {
             var bitmap = new Bitmap(ToBitmap(image));
             var nBitmap = new Bitmap(bitmap.Width, bitmap.Height);
 
             var bc = new BlobCounter
             {
-                MinHeight = 1,
-                MinWidth = 1,
-                FilterBlobs = false
+                MinHeight = precision,
+                MinWidth = precision,
+                FilterBlobs = true,
+                ObjectsOrder = ObjectsOrder.YX
             };
 
             bitmap = Grayscale.CommonAlgorithms.BT709.Apply(bitmap);
             bc.ProcessImage(bitmap);
 
             var blobRects = bc.GetObjectsRectangles();
-            Blobs = blobRects;
+            Blobs = RemoveIntersects(blobRects);
 
             var g = Graphics.FromImage(nBitmap);
             var p = new Pen(Color.WhiteSmoke, 1);
 
             g.DrawImage(bitmap, 0, 0);
 
-            if (blobRects.Length < 0) return ToBitmapImage(bitmap);
+            if (Blobs.Length < 0) return ToBitmapImage(bitmap);
 
-            foreach (var rectangle in blobRects)
+            foreach (var rectangle in Blobs)
                 g.DrawRectangle(p, rectangle);
 
+            bitmap.Dispose();
+            g.Dispose();
+
             return ToBitmapImage(nBitmap);
+        }
+
+        private static Rectangle[] RemoveIntersects(Rectangle[] rects)
+        {
+            if (rects == null) return null;
+
+            var nRects = rects.ToList();
+            var iRects = rects.SelectMany((x, i) => rects.Skip(i + 1), Tuple.Create)
+                .Where(x => x.Item1.IntersectsWith(x.Item2))
+                .ToList();
+
+            foreach (var tuple in iRects)
+            {
+                var x = ((int)tuple.Item1.X < (int)tuple.Item2.X) ? (int)tuple.Item1.X : (int)tuple.Item2.X;
+                var y = ((int)tuple.Item1.Y < (int)tuple.Item2.Y) ? (int)tuple.Item1.Y : (int)tuple.Item2.Y;
+                var offset = Rectangle.Intersect(tuple.Item1, tuple.Item2).Size;
+                var width = (int )tuple.Item1.Width + (int) tuple.Item2.Width - offset.Width;
+                var height = (int) tuple.Item1.Height + (int) tuple.Item2.Height - offset.Height;
+
+                var rec1Index = nRects.IndexOf(tuple.Item1);
+                var rec2Index = nRects.IndexOf(tuple.Item2);
+
+                if (rec1Index < 1 || rec2Index < 1) continue;
+
+                nRects[rec1Index] = new Rectangle(x, y, width, height);
+                nRects.RemoveAt(rec2Index);
+            }
+
+            return nRects.ToArray();
         }
 
         public static BitmapImage UpdateRects(BitmapImage image, Rectangle[] rectangles)
@@ -62,12 +97,14 @@ namespace QuickSprite.Utility
             foreach (var rectangle in rectangles)
                 g.DrawRectangle(p, rectangle);
 
+            bitmap.Dispose();
+            g.Dispose();
+
             return ToBitmapImage(nBitmap);
         }
 
         public static Dictionary<BitmapImage, string> PopulateSprites(BitmapImage image, Rectangle[] rectangles)
         {
-
             var oBitmap = new Bitmap(ToBitmap(image));
             var bitmaps = rectangles.Select(rectangle => oBitmap.Clone(rectangle, oBitmap.PixelFormat)).ToList();
             var bitmapImages = bitmaps.Select(ToBitmapImage).ToList();
@@ -77,6 +114,8 @@ namespace QuickSprite.Utility
             {
                 SpriteKvp.Add(bitmapImages[i], cords[i]);
             }
+
+            oBitmap.Dispose();
 
             return SpriteKvp;
         }

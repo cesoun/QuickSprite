@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
 using System.Linq;
@@ -20,7 +21,6 @@ namespace QuickSprite
         private static readonly LoadImage LoadImage = new LoadImage();
         private static readonly SpriteCutter SpriteCutter = new SpriteCutter();
        
-
         private static string _fileName;
         private static Point _startPoint;
         private static Point _originPoint;
@@ -44,25 +44,60 @@ namespace QuickSprite
 
             ImageSelector.RenderTransform = tg;
 
-            ImageSelector.MouseWheel += Selector_MouseWheel;
-            ImageSelector.MouseRightButtonDown += Selector_MouseRightDown;
-            ImageSelector.MouseRightButtonUp += Selector_MouseRightUp;
             ImageSelector.MouseMove += Selector_MouseMove;
+            ImageSelector.MouseWheel += Selector_MouseWheel;
+            ImageSelector.MouseRightButtonUp += Selector_MouseRightUp;
+            ImageSelector.MouseRightButtonDown += Selector_MouseRightDown;
 
             SaveButton.Click += SaveSprites;
             CopyButton.Click += ToClipboard;
 
             ImagePreview.MouseDown += ResetSprites;
             ImageBackground.MouseDown += ResetSprites;
+
+            SliderPrecision.ValueChanged += UpdateSprites;
+        }
+
+        private void UpdateSprites(object sender, RoutedPropertyChangedEventArgs<double> e)
+        {
+
+            _output.Clear();
+            TreeSprites.Items.Clear();
+            _spriteDictionary.Clear();
+            ImageSelector.Source = SpriteCutter.GetSprites(_bmpImage, (int)e.NewValue);
+
+            
+            PopulateTree();
+            PopulateOutput();
         }
 
         private void ResetSprites(object sender, MouseButtonEventArgs e)
         {
+            _output.Clear();
             TreeSprites.Items.Clear();
             _spriteDictionary.Clear();
-            _output.Clear();
+
+            SliderPrecision.IsEnabled = false;
+
             ImageSelector.Source = null;
             ImagePreview.Source = null;
+        }
+
+        private void PopulateTree()
+        {
+            _rectangles = SpriteCutter.Blobs;
+            _spriteDictionary = SpriteCutter.PopulateSprites(_bmpImage, _rectangles);
+
+            foreach (var sprite in _spriteDictionary)
+            {
+                var item = new TreeViewItem
+                {
+                    Header = sprite.Key
+                };
+
+                item.Selected += RemoveItem;
+                TreeSprites.Items.Add(item);
+            }
         }
 
         private void PopulateTree(string file)
@@ -119,13 +154,14 @@ namespace QuickSprite
         private void LoadImage_OnDrop(object sender, DragEventArgs e)
         {
             ResetSprites(null, null);
+            SliderPrecision.IsEnabled = true;
 
             var fileData = e.Data as DataObject;
             if (fileData == null || !fileData.ContainsFileDropList()) return;
 
             var files = fileData.GetFileDropList();
 
-            ImageSelector.Source = SpriteCutter.GetSprites(LoadImage.FromFile(files[0]));
+            ImageSelector.Source = SpriteCutter.GetSprites(LoadImage.FromFile(files[0]), (int)SliderPrecision.Value);
             ImagePreview.Source = LoadImage.FromFile(files[0]);
             _fileName = files[0].Substring(files[0].LastIndexOf('\\') + 1);
 
