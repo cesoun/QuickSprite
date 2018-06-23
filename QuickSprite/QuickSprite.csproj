@@ -58,7 +58,7 @@
     <ApplicationIcon>qs.ico</ApplicationIcon>
   </PropertyGroup>
   <PropertyGroup>
-    <SignManifests>true</SignManifests>
+    <SignManifests>false</SignManifests>
   </PropertyGroup>
   <PropertyGroup>
     <SignAssembly>false</SignAssembly>
@@ -114,6 +114,7 @@
     </ApplicationDefinition>
     <Compile Include="Utility\LoadImage.cs" />
     <Compile Include="Utility\SpriteCutter.cs" />
+    <Compile Include="Utility\TextFilter.cs" />
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>

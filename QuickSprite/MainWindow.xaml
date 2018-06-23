@@ -4,7 +4,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         mc:Ignorable="d"
-        Title="Quick Sprite" Height="490" Width="650" ResizeMode="NoResize" FontFamily="Roboto Mono" AllowDrop="True" Drop="LoadImage_OnDrop" Background="#FF466FB8">
+        Title="Quick Sprite" Height="520" Width="650" ResizeMode="NoResize" FontFamily="Roboto Mono" AllowDrop="True" Drop="LoadImage_OnDrop" Background="#FF466FB8">
 
     <Grid>
         
@@ -59,11 +59,15 @@
             <!-- Precision -->
             <Slider IsEnabled="False" Height="25" Minimum="1" Maximum="20" TickPlacement="TopLeft" IsSnapToTickEnabled="True" AutoToolTipPlacement="TopLeft" x:Name="SliderPrecision" Margin="3 0"/>
 
+            <!-- Indexing -->
+            <TextBox Height="30" Width="125" x:Name="Uindex" ToolTip="Starting Sprite Index." IsEnabled="False" Text="400" BorderThickness="0" Background="#FF4368AA" Foreground="White" HorizontalAlignment="Left" TextAlignment="Center" VerticalContentAlignment="Center"/>
+            
             <!-- Buttons -->
-            <Button Height="30" Width="125" x:Name="CopyButton" Content="Copy Sprites" BorderThickness="0" Background="#FF3F62A0" Foreground="White" BorderBrush="Black" HorizontalAlignment="Left"/>
-            <Button Height="30" Width="125" x:Name="SaveButton" Content="Save Sprites" BorderThickness="0" Background="#FF3F62A0" Foreground="White" BorderBrush="Black" HorizontalAlignment="Left"/>
+            <Button Height="30" Width="125" x:Name="CopyButton" ToolTip="Copy Sprites to Clipboard."  Content="Copy Sprites" BorderThickness="0" Background="#FF3F62A0" Foreground="White" HorizontalAlignment="Left"/>
+            <Button Height="30" Width="125" x:Name="SaveButton" ToolTip="Save Sprites to File." Content="Save Sprites" BorderThickness="0" Background="#FF3F62A0" Foreground="White" HorizontalAlignment="Left"/>
         </StackPanel>
 
     </Grid>
 
 </Window>
+

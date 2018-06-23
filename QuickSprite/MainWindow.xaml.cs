@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
 using System.Linq;
@@ -30,6 +29,7 @@ namespace QuickSprite
 
         private Rectangle[] _rectangles;
 
+        // TODO: Cleanup Main
 
         public MainWindow()
         {
@@ -56,28 +56,30 @@ namespace QuickSprite
             ImageBackground.MouseDown += ResetSprites;
 
             SliderPrecision.ValueChanged += UpdateSprites;
+
+            Uindex.PreviewTextInput += IndexTextInput;
+        }
+
+        private static void IndexTextInput(object sender, TextCompositionEventArgs e)
+        {
+            e.Handled = !TextFilter.NumericInput(e.Text);
         }
 
         private void UpdateSprites(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
-
-            _output.Clear();
             TreeSprites.Items.Clear();
             _spriteDictionary.Clear();
             ImageSelector.Source = SpriteCutter.GetSprites(_bmpImage, (int)e.NewValue);
-
-            
             PopulateTree();
-            PopulateOutput();
         }
 
         private void ResetSprites(object sender, MouseButtonEventArgs e)
         {
-            _output.Clear();
             TreeSprites.Items.Clear();
             _spriteDictionary.Clear();
 
             SliderPrecision.IsEnabled = false;
+            Uindex.IsEnabled = false;
 
             ImageSelector.Source = null;
             ImagePreview.Source = null;
@@ -119,13 +121,27 @@ namespace QuickSprite
             }
         }
 
-        private static void PopulateOutput()
+        private void PopulateOutput()
         {
-            var i = 400;
-            foreach (var sprite in _spriteDictionary)
+            _output.Clear();
+
+            var i = int.Parse(Uindex.Text);
+
+            if (i < 0)
             {
-                _output.Append($"SPRITE  {i} {_fileName}{sprite.Value} QUICKSPRITE\n");
-                i++;
+                foreach (var sprite in _spriteDictionary)
+                {
+                    _output.Append($"SPRITE  {i} {_fileName}{sprite.Value} QUICKSPRITE\n");
+                    i--;
+                }
+            }
+            else
+            {
+                foreach (var sprite in _spriteDictionary)
+                {
+                    _output.Append($"SPRITE  {i} {_fileName}{sprite.Value} QUICKSPRITE\n");
+                    i++;
+                }
             }
         }
 
@@ -145,9 +161,6 @@ namespace QuickSprite
             ImageSelector.Source = SpriteCutter.UpdateRects(_bmpImage ,_rectangles);
             _spriteDictionary.Remove((BitmapImage) item.Header);
 
-            _output.Clear();
-            PopulateOutput();
-
             TreeSprites.Items.Remove(item);
         }
 
@@ -155,6 +168,7 @@ namespace QuickSprite
         {
             ResetSprites(null, null);
             SliderPrecision.IsEnabled = true;
+            Uindex.IsEnabled = true;
 
             var fileData = e.Data as DataObject;
             if (fileData == null || !fileData.ContainsFileDropList()) return;
@@ -166,7 +180,6 @@ namespace QuickSprite
             _fileName = files[0].Substring(files[0].LastIndexOf('\\') + 1);
 
             PopulateTree(files[0]);
-            PopulateOutput();
         }
 
         private void Selector_MouseRightDown(object sender, MouseButtonEventArgs e)
@@ -212,6 +225,8 @@ namespace QuickSprite
 
         private async void SaveSprites(object sender, RoutedEventArgs e)
         {
+            PopulateOutput();
+
             SaveButton.Content = "Saving...";
 
             var saveDialog = new SaveFileDialog
@@ -236,6 +251,8 @@ namespace QuickSprite
 
         private async void ToClipboard(object sender, RoutedEventArgs e)
         {
+            PopulateOutput();
+
             Clipboard.SetText(_output.ToString());
             CopyButton.Content = "Copied...";
 
