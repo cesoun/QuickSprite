@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
 using System.Linq;
@@ -225,25 +226,33 @@ namespace QuickSprite
 
         private async void SaveSprites(object sender, RoutedEventArgs e)
         {
-            PopulateOutput();
-
-            SaveButton.Content = "Saving...";
-
-            var saveDialog = new SaveFileDialog
+            try
             {
-                Filter = "txt files (*.txt)|*.txt",
-                FileName = "QuickSprite",
-                DefaultExt = ".txt",
-                RestoreDirectory = true
-            };
+                PopulateOutput();
 
-            if (saveDialog.ShowDialog() == true)
-            {
-                File.WriteAllText(saveDialog.FileName, _output.ToString());
-                SaveButton.Content = "Saved...";
+                SaveButton.Content = "Saving...";
+
+                var saveDialog = new SaveFileDialog
+                {
+                    Filter = "txt files (*.txt)|*.txt",
+                    FileName = "QuickSprite",
+                    DefaultExt = ".txt",
+                    RestoreDirectory = true
+                };
+
+                if (saveDialog.ShowDialog() == true)
+                {
+                    File.WriteAllText(saveDialog.FileName, _output.ToString());
+                    SaveButton.Content = "Saved...";
+                }
+                else
+                    SaveButton.Content = "Aborted...";
             }
-            else
-                SaveButton.Content = "Aborted...";
+            catch (Exception)
+            {
+                SaveButton.Content = "Index Error...";
+                MessageBox.Show("Please check that the index is input correctly.", "Index Error!", MessageBoxButton.OK);
+            }
 
             await Task.Delay(1500);
             SaveButton.Content = "Save Sprites";
@@ -251,10 +260,18 @@ namespace QuickSprite
 
         private async void ToClipboard(object sender, RoutedEventArgs e)
         {
-            PopulateOutput();
+            try
+            {
+                PopulateOutput();
 
-            Clipboard.SetText(_output.ToString());
-            CopyButton.Content = "Copied...";
+                Clipboard.SetText(_output.ToString());
+                CopyButton.Content = "Copied...";
+            }
+            catch (Exception)
+            {
+                CopyButton.Content = "Index Error...";
+                MessageBox.Show("Please check that the index is input correctly.", "Index Error!", MessageBoxButton.OK);
+            }
 
             await Task.Delay(1500);
             CopyButton.Content = "Copy Sprites";
