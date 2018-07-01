@@ -16,7 +16,7 @@
         <!-- Pan & Zoom Viewer -->
         <StackPanel Orientation="Vertical" Grid.Column="1" Background="#FF29529C">
             <Border ClipToBounds="True" x:Name="SelectorBorder" BorderThickness="0">
-                <Image RenderTransformOrigin="0.5, 0.5" x:Name="ImageSelector"/>
+                <Image Height="490" RenderTransformOrigin="0.5, 0.5" x:Name="ImageSelector"/>
             </Border>
         </StackPanel>
 
