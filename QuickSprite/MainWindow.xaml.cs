@@ -130,10 +130,12 @@ namespace QuickSprite
 
             if (i < 0)
             {
+                // Reverse the order so its decending.
+                i = _spriteDictionary.Count * -1;
                 foreach (var sprite in _spriteDictionary)
                 {
                     _output.Append($"SPRITE  {i} {_fileName}{sprite.Value} QUICKSPRITE\n");
-                    i--;
+                    i++;
                 }
             }
             else
